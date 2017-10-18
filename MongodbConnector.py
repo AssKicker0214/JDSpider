@@ -9,10 +9,13 @@ def get_collection(collection_name):
 
     return collection
 
+
 class LocalMongo:
     def __init__(self):
-        self.collection = MongoClient("localhost", 27072).jingdong["comment"]
+        self.collection = MongoClient("localhost", 27072).jd["comments_part"]
 
+    def save(self, doc):
+        self.collection.save(doc)
 
 
 class AliyunMongo:
@@ -22,7 +25,9 @@ class AliyunMongo:
 
     def get_task(self, number=5):
         for i in range(number):
-            docs = self.collection.find_and_modify({"status": "free"}, {"$set": {"status": "crawling by " + self.team_member_name}})
+            docs = self.collection.find_and_modify({"status": "free"},
+                                                   {"$set": {"status": "crawling by " + self.team_member_name}})
+            # docs = self.collection.find({})
             print("获取任务:")
             print(docs)
             for doc in docs:
@@ -31,4 +36,3 @@ class AliyunMongo:
 
     def commmit_task(self, id, total):
         self.collection.update({"_id": id}, {"$set": {"status": "completed", "total": total}})
-
