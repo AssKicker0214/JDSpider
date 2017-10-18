@@ -55,7 +55,8 @@ class JDCommentSpider(Spider):
             for item in raw_comments_json:
                 comments.append(
                     dict(id=item["id"], guid=item["guid"], content=item["content"], creationTime=item["creationTime"],
-                         referenceId=item["referenceId"], referenceName=item["referenceName"]))
+                         referenceId=item["referenceId"], referenceName=item["referenceName"], score=item["score"],
+                         usefulVoteCount=item["usefulVoteCount"], uselessVoteCount=item["uselessVoteCount"]))
             subtotal = len(raw_comments_json) + total
             # print(comments_json)
             # print()
