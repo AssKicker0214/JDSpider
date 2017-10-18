@@ -24,16 +24,18 @@ class JDCommentSpider(Spider):
 
         # %s的位置是商品id，%d的位置是页数
         self.url_template = 'https://club.jd.com/productpage/p-%s-s-0-t-1-p-%d.html'
+
+        # 构造阿里云数据库连接，将自己名称的简写填入
         self.aliyun = AliyunMongo("qhb")
+
+        # 将爬取的评论保存在本地
         self.local = LocalMongo()
 
     def start_requests(self):
         # 从阿里云服务器获取任务，get_task可以传入数值参数，代表获取多少个待爬商品
         product_ids = self.aliyun.get_task()
-        # product_ids = ['1973564623']
         for product_id in product_ids:
             url = self.url_template % (product_id, 0)
-            print("=>", url)
             yield Request(url, headers=self.headers, callback=self.parse, meta={"product-id": product_id, "current-page": 0, "total": 0, "comments": []})
 
     def parse(self, response):

@@ -12,7 +12,7 @@ def get_collection(collection_name):
 
 class LocalMongo:
     def __init__(self):
-        self.collection = MongoClient("localhost", 27072).jd["comments_part"]
+        self.collection = MongoClient("localhost", 27017).jd["comments_part"]
 
     def save(self, doc):
         self.collection.save(doc)
@@ -26,7 +26,7 @@ class AliyunMongo:
     def get_task(self, number=5):
         for i in range(number):
             docs = self.collection.find_and_modify({"status": "free"},
-                                                   {"$set": {"status": "crawling by " + self.team_member_name}})
+                                                   {"$set": {"status": "crawling", "crawler": self.team_member_name}})
             # docs = self.collection.find({})
             print("获取任务:")
             print(docs)
@@ -35,4 +35,4 @@ class AliyunMongo:
                 yield product_id
 
     def commmit_task(self, id, total):
-        self.collection.update({"_id": id}, {"$set": {"status": "completed", "total": total}})
+        self.collection.update({"_id": id}, {"$set": {"status": "completed", "crawler": self.team_member_name, "total": total}})
