@@ -25,14 +25,13 @@ class AliyunMongo:
 
     def get_task(self, number=5):
         for i in range(number):
-            docs = self.collection.find_and_modify({"status": "free"},
-                                                   {"$set": {"status": "crawling", "crawler": self.team_member_name}})
+            doc = self.collection.find_and_modify(query={"status": "free"},
+                                                   update={"$set": {"status": "crawling", "crawler": self.team_member_name}})
             # docs = self.collection.find({})
             print("获取任务:")
-            print(docs)
-            for doc in docs:
-                product_id = doc["_id"]
-                yield product_id
+            print(doc)
+            product_id = doc["_id"]
+            yield product_id
 
     def commmit_task(self, id, total):
         self.collection.update({"_id": id}, {"$set": {"status": "completed", "crawler": self.team_member_name, "total": total}})
