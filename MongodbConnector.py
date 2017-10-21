@@ -17,6 +17,9 @@ class LocalMongo:
     def save(self, doc):
         self.collection.save(doc)
 
+    def exist(self, pid):
+        return self.collection.find({"_id": pid}).count()
+
 
 class AliyunMongo:
     def __init__(self, team_member_name):
@@ -33,5 +36,11 @@ class AliyunMongo:
             product_id = doc["_id"]
             yield product_id
 
-    def commmit_task(self, id, total):
+    def commit_task(self, id, total):
         self.collection.update({"_id": id}, {"$set": {"status": "completed", "crawler": self.team_member_name, "total": total}})
+
+    def get_failed_pid(self):
+        cursor = self.collection.find({"status": "crawling", "crawler": self.team_member_name})
+        for doc in cursor:
+            pid = doc["_id"]
+            yield pid

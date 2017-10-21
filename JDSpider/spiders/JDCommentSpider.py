@@ -33,24 +33,25 @@ class JDCommentSpider(Spider):
 
     def start_requests(self):
         # 从阿里云服务器获取任务，get_task可以传入数值参数，代表获取多少个待爬商品
-        product_ids = self.aliyun.get_task()
+        product_ids = self.aliyun.get_task(500)
         for product_id in product_ids:
             url = self.url_template % (product_id, 0)
-            yield Request(url, headers=self.headers, callback=self.parse, meta={"product-id": product_id, "current-page": 0, "total": 0, "comments": []})
+            yield Request(url, headers=self.headers, callback=self.parse,
+                          meta={"product-id": product_id, "current-page": 0, "total": 0, "comments": []})
 
     def parse(self, response):
         page = response.meta["current-page"]
         product_id = response.meta["product-id"]
         total = response.meta["total"]
         comments = response.meta["comments"]
-        print("=======parsing product: %s, page: %d========"%(product_id, page))
+        # print("=======parsing product: %s, page: %d========"%(product_id, page))
         content = response.body.decode('gbk')
         commentsRe = re.search(r'(?<="comments":)\[.*\]', content)
         if commentsRe is None or commentsRe.group(0) == '[]':
-            print("结束, 提交结果，并存储本地")
+            print("结束, 提交结果，并存储本地", product_id, page)
             doc = {"_id": product_id, "total_comments": total, "comments": comments}
             self.local.save(doc)
-            self.aliyun.commmit_task(product_id, total)
+            self.aliyun.commit_task(product_id, total)
         else:
             raw_comments = commentsRe.group(0)
             raw_comments_json = json.loads(raw_comments)
@@ -65,7 +66,9 @@ class JDCommentSpider(Spider):
             # print(comments_json[0])
             next_page = page + 1
             next_url = self.url_template % (product_id, next_page)
-            yield Request(next_url, meta={"product-id": product_id, "current-page": next_page, "total": subtotal, "comments": comments})
+            yield Request(next_url, meta={"product-id": product_id, "current-page": next_page, "total": subtotal,
+                                          "comments": comments})
+
 # spider = JDSpider()
 # reqs = spider.start_requests()
 # for req in reqs:
