@@ -33,7 +33,7 @@ class JDCommentSpider(Spider):
 
     def start_requests(self):
         # 从阿里云服务器获取任务，get_task可以传入数值参数，代表获取多少个待爬商品
-        product_ids = self.aliyun.get_task(500)
+        product_ids = self.aliyun.get_task(50)
         for product_id in product_ids:
             url = self.url_template % (product_id, 0)
             yield Request(url, headers=self.headers, callback=self.parse,

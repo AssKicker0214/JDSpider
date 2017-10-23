@@ -20,7 +20,7 @@
 1. 更改`JDCommentSpider.py`文件中第29行，将`self.aliyun = AliyunMongo("qhb")`中的`qhb`替换为自己名字的缩写
 2. 启动mongodb，`mongod --dbpath [指定一个存放数据的文件夹]`。 如果是第一次，需要建立数据库`jd`，在其下建立集合`comments_part`
 3. `JDCommentSpider.py`第36行`product_ids = self.aliyun.get_task()`中，`get_task`可以传入参数：一次爬取多少件商品的评论，默认5. *不要太大，会被封 ip*
-4. 在项目根目录，在命令行输入`scrapy crawl jd-comment`，运行程序
+4. 运行方式：1. 在项目根目录，在命令行输入`scrapy crawl jd-comment`，运行程序; 2. 运行driver文件，可以在该文件末尾修改爬取时间间隔
 
 ### 备注
 - 可以自行去阿里云查询当前大家整体爬取的结果。地址为101.132.40.25，端口号27072。连接命令`mongo --host 101.132.40.25 --port 27072`。***看看就好了，不要改数据……***

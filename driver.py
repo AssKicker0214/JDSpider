@@ -16,8 +16,7 @@ def clear_status(team_member_name):
 
 
 # clear_status("qhb")
-x = 10
-while x > 0:
+while True:
     # print("==========%d=============" % x)
     os.system("scrapy crawl jd-comment")
 
